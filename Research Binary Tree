@@ -1,0 +1,194 @@
+#include <iostream>
+#include <conio.h>
+using namespace std;
+struct node {
+	int key;
+	struct node* lft, * rgt;
+};
+struct node* newNode(int item)
+{
+	struct node* temp
+		= (struct node*)malloc(sizeof(struct node));
+	temp->key = item;
+	temp->lft = temp->rgt = NULL;
+	return temp;
+}
+void inorder(struct node* root)
+{
+	if (root != NULL) {
+		inorder(root->lft);
+		cout << root->key << " ";
+		inorder(root->rgt);
+	}
+}
+struct node* insertFunc(struct node* node, int val)
+{
+	if (!node)
+	{
+		return newNode(val);
+	}
+	if (val > node->key)
+	{
+		node->rgt = insertFunc(node->rgt, val);
+	}
+	else
+	{
+		node->lft = insertFunc(node->lft, val);
+	}
+	return node;
+}
+struct node* minValueNode(struct node* node)
+{
+	struct node* current = node;
+	while (current && current->lft != NULL)
+		current = current->lft;
+	return current;
+}
+struct node* deleteFunc(struct node* root, int key)
+{
+	if (root == NULL)
+		return root;
+	if (key < root->key)
+		root->lft = deleteFunc(root->lft, key);
+	else if (key > root->key)
+		root->rgt = deleteFunc(root->rgt, key);
+	else {
+		if (root->lft == NULL and root->rgt == NULL)
+			return NULL;
+		else if (root->lft == NULL) {
+			struct node* temp = root->rgt;
+			free(root);
+			return temp;
+		}
+		else if (root->rgt == NULL) {
+			struct node* temp = root->lft;
+			free(root);
+			return temp;
+		}
+		struct node* temp = minValueNode(root->rgt);
+		root->key = temp->key;
+		root->rgt = deleteFunc(root->rgt, temp->key);
+	}
+	return root;
+}
+
+void preOrder(node* p) {
+	if (p == nullptr) return;
+
+	cout << p->key << '-';
+	preOrder(p->lft);
+	preOrder(p->rgt);
+}
+
+void postOrder(node* p) {
+	if (p == nullptr) return;
+
+	postOrder(p->lft);
+	postOrder(p->rgt);
+	cout << p->key << '-';
+}
+int main()
+{
+	int b;
+	int a;
+	int n;
+	cout << "N" << endl;
+	cin >> n;
+	cout << endl;
+	struct node* root = NULL;
+	int ii;
+	for (int i = 0; i < n; i++) {
+		cout << "i["<<i<<"]" << endl;
+		cin >> ii;
+		root = insertFunc(root, ii);
+
+	}
+	do
+	{
+
+		cout << "Press 1 to Print The Tree \n";
+		cout << "Press 2 to add Elements \n";
+		cout << "Press 3 to delete Elements\n";
+		cout << "Press 4` to Exit \n";
+
+		cout << "Your choice is: ";
+		int selection;
+		cin >> selection;
+
+		cout << "\n =================================================== \n\n";
+
+		
+		switch (selection)
+		{
+		case 1:
+			cout << "\n=========INORDER==========" << endl;
+			inorder(root);
+			cout << "\n=========PREORDER==========" << endl;
+			preOrder(root);
+			cout << "\n=========POSTORDER==========" << endl;
+			postOrder(root);
+			cout << "\n\n =================================================== \n\n";
+			break;
+		case 2:
+			cout << "Input the number want to add: \n ";
+			cin >> a;
+			root = insertFunc(root, a);
+
+			cout << "\n\n =================================================== \n\n";
+			cout << "\n=========INORDER==========" << endl;
+			inorder(root);
+			cout << "\n=========PREORDER==========" << endl;
+			preOrder(root);
+			cout << "\n=========POSTORDER==========" << endl;
+			postOrder(root);
+			cout << "\n\n =================================================== \n\n";
+			break;
+		case 3:
+			cout << "Input element want to delete \n";
+			cin >> b;
+			root = deleteFunc(root, b);
+
+			cout << "\n\n =================================================== \n\n";
+			cout << "\n=========INORDER==========" << endl;
+			inorder(root);
+			cout << "\n=========PREORDER==========" << endl;
+			preOrder(root);
+			cout << "\n=========POSTORDER==========" << endl;
+			postOrder(root);
+			cout << "\n\n =================================================== \n\n";
+			break;
+		case 4:
+			return 0;
+			// tat may 
+
+		default:
+			break;
+		}
+	} while (_getch() != 27);
+	cout << "Inorder traversal of the given tree \n";
+	inorder(root);
+	//cout << "\n<Delete> 1\n";
+	
+	cout << "Traversing the modified tree \n";
+	inorder(root);
+	//cout << "\n<Delete> 19\n";
+	
+	cout << " Traversing the modified tree \n";
+	inorder(root);
+	//cout << "\n<Insert> 72\n";
+	
+	cout << " Traversing the modified tree \n";
+	inorder(root);
+	//cout << "\n<Delete> 7\n";
+	
+	cout << " Traversing the modified tree \n";
+	inorder(root);
+	cout << endl;
+	cout << " Preordering the modified tree \n";
+	preOrder(root);
+	cout << endl;
+	cout << " PostOrdering the modified tree \n";
+	postOrder(root);
+	cout << endl;
+	return 0;
+}
